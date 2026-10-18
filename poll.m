@@ -1,21 +1,19 @@
-function [done, L_Loss, T_max] = poll(id)
+function [done, val] = poll(id)
 %POLL  Ask about ONE design. Non-blocking.
-%   done = true  -> finished; L_Loss and T_max hold the result (NaN if it errored)
-%   done = false -> still running; L_Loss and T_max are NaN
+%   done = true and val = result once it has finished (NaN if it errored).
+%   done = false while it is still running.
     FUT = evalin('base', 'FUT');
     f = FUT(id);
     if strcmp(f.State, 'finished')
         done = true;
         try
-            [L_Loss, T_max] = fetchOutputs(f);
+            val = fetchOutputs(f);
         catch
-            L_Loss = NaN;   % this design failed -> NaN, keep going
-            T_max  = NaN;
+            val = NaN;            % this design failed -> record NaN, keep going
         end
-        remove(FUT, id);        % drop it so the store stays small
+        remove(FUT, id);          % drop it so the store stays small
     else
         done = false;
-        L_Loss = NaN;
-        T_max  = NaN;
+        val = NaN;
     end
 end
