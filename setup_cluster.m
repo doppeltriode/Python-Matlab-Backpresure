@@ -3,7 +3,7 @@ function setup_cluster(profile, n)
 %   profile : your Parallel Server profile name (use 'local' to test on your machine)
 %   n       : number of workers
     if isempty(gcp('nocreate'))
-        parpool(profile, n);
+        parpool('local', n);
     end
     % FUT holds the currently-running designs, keyed by id. It is a handle,
     % so submit() and poll() both see the same object.
